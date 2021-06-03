@@ -1,6 +1,6 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+TO START: USE THE `npm run start:dev` command!  This will startup the FE and mock BE
 
 ## Available Scripts
 
