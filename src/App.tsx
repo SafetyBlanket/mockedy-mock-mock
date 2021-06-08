@@ -1,70 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import { observer } from 'mobx-react-lite';
 import './services/http.service';
 import './App.css';
 
-import faker from 'faker';
-
 import { getUsers, postUsers } from './api';
-import { User } from './models';
+import { UserModel } from './models';
+import { UserModelExample } from './components';
 
 function App() {
-
   const [output, setOutput] = useState(null as any);
-  const [user, setUser] = useState({ id: faker.random.alphaNumeric(10), firstName: faker.name.firstName(), lastName: faker.name.lastName() } as User);
-  
-  useEffect(() => {
-    postUsers(user).then(response => setOutput(JSON.stringify(response.data)));
-  }, [user])
+  const [user, setUser] = useState(new UserModel());
 
-  const getUsersHandler = () => {
-    getUsers().then(response => setOutput(JSON.stringify(response.data, null, 2)));
-  }
-
-  const postUsersHandler = () => {
-    setUser({ 
-      id: faker.random.alphaNumeric(10),
-      firstName: faker.name.firstName(), 
-      lastName: faker.name.lastName() 
-    });
-  }
+  const getUsersList = async () => await getUsers()
+    .then(r => setOutput(JSON.stringify(r.data, null, 2)))
+    .catch(err => console.error(err));
   
+  const createUser = async (user: UserModel = new UserModel()) => await postUsers(user)
+    .then(r => setOutput(JSON.stringify(r.data)))
+    .catch(err => console.error(err))
+    .finally(() => setUser(new UserModel()));
+
   return (
     <div className="App">
       <pre>{ output }</pre>
-      <button onClick={getUsersHandler}>Get Users!</button>
-      <button onClick={postUsersHandler}>Post User 
+      <button onClick={getUsersList}>Get Users!</button>
+      <button onClick={() => createUser(user)}>Create User 
         <pre>{JSON.stringify(user)}</pre>
       </button>
+      <UserModelExample user={user} />
     </div>
   );
 }
 
-export default App;
-
-// import React, { useState } from 'react';
-// import './services/http.service';
-// import './App.css';
-
-// import { getUsers } from './api';
-
-// function App() {
-
-//   const [output, setOutput] = useState('');
-
-//   const getUsersHandler = () => {
-//     getUsers().then(data => setOutput(JSON.stringify(data)));
-//   }
-
-//   return (
-//     <div className="App">
-
-//       <code>{{ output }}</code>
-
-//       <button onClick={getUsersHandler}>Get Users!</button>
-
-//     </div>
-//   );
-// }
-
-// export default App;
+export default observer(App);

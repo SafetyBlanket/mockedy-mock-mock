@@ -1,17 +1,17 @@
 import axios, { AxiosResponse } from 'axios';
-import { User as UserModel } from '../models/user.model';
+import { UserInterface } from '../models/user.model';
 
 const baseUrl = 'http://localhost:3004';
+const usersUrl = `${baseUrl}/users`
 
-export const getUsers = async () => {
-  return axios.get(`${baseUrl}/users`);
+export const getUsers = async (): Promise<AxiosResponse<UserInterface>> => {
+  return axios.get(usersUrl);
 }
 
-export const postUsers = async (payload: UserModel): Promise<AxiosResponse<UserModel>> => {
-  return axios.post(`${baseUrl}/users`, payload);
+export const postUsers = async (payload: UserInterface): Promise<AxiosResponse<UserInterface>> => {
+  return axios.post(usersUrl, payload);
 }
 
-// postUsers({ id: 'sldkfjsd', firstName: 'test', lastName: 'tests' }).then(response => {
-//   // You get intellisense on data returned...
-//   response.data;
-// })
+export const deleteUsers = async (id: string) => {
+  return axios.delete(`${usersUrl}?id=${id}`);
+}
